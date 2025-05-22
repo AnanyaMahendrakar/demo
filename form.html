@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Transaction Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f1f5f9;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    .dashboard {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+         box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+                    
+    h2 {
+      margin-bottom: 1rem;
+      text-align: center;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 1rem; 
+    }
+
+    .form-group label {
+      display: block;   
+      margin-bottom: 0.4rem;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.8rem;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1e40af;
+    }
+
+    .summary {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #f9fafb;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .transactions {
+      margin-top: 1.5rem;
+    }
+
+    .transactions ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .transactions li {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    .credit {
+      color: #16a34a;
+    }
+
+    .debit {
+      color: #dc2626;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard">
+    <h2>Transaction Dashboard</h2>
+
+    <form id="transactionForm">
+      <div class="form-group">
+        <label for="desc">Description</label>
+        <input type="text" id="desc" required>
+      </div>
+      <div class="form-group">
+        <label for="amount">Amount</label>
+        <input type="number" id="amount" required>
+      </div>
+      <div class="form-group">
+        <label for="type">Type</label>
+        <select id="type" required>
+          <option value="credit">Credit</option>
+          <option value="debit">Debit</option>
+        </select>
+      </div>
+      <button type="submit">Add Transaction</button>
+    </form>
+
+    <div class="summary">
+      <div>Total: $<span id="total">0.00</span></div>
+      <div>Credit: $<span class="credit" id="totalCredit">0.00</span></div>
+      <div>Debit: $<span class="debit" id="totalDebit">0.00</span></div>
+    </div>
+
+    <div class="transactions">
+      <h3>Transaction History</h3>
+      <ul id="transactionList"></ul>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('transactionForm');
+    const transactionList = document.getElementById('transactionList');
+    const totalDisplay = document.getElementById('total');
+    const creditDisplay = document.getElementById('totalCredit');
+    const debitDisplay = document.getElementById('totalDebit');
+
+    let total = 0;
+    let totalCredit = 0;
+    let totalDebit = 0;
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const desc = document.getElementById('desc').value;
+      const amount = parseFloat(document.getElementById('amount').value);
+      const type = document.getElementById('type').value;
+
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>${desc} (${type})</span>
+        <span class="${type}">$${amount.toFixed(2)}</span>
+      `;
+      transactionList.appendChild(li);
+
+      if (type === 'credit') {
+        totalCredit += amount;
+        total += amount;
+      } else {
+        totalDebit += amount;
+        total -= amount;
+      }
+
+      totalDisplay.textContent = total.toFixed(2);
+      creditDisplay.textContent = totalCredit.toFixed(2);
+      debitDisplay.textContent = totalDebit.toFixed(2);
+
+      form.reset();
+    });
+  </script>
+
+</body>
+</html>
